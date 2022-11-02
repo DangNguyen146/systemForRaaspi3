@@ -19,3 +19,8 @@
     <td>19521457@gm.uit.edu.vn</td>
   </tr>
 </table>
+
+### More source other
+- Backup Jenkins: https://github.com/DangNguyen146/bk_jenkins
+- Backup nginx: https://github.com/DangNguyen146/ngixnconfig
+- Backup sourcode: https://github.com/DangNguyen146/systemForRaaspi3
