@@ -1,12 +1,13 @@
-from flask import Flask, render_template, Response, redirect, url_for, request, json
+from flask import Flask, render_template, Response, request
 import cv2
 import sqlite3
-import io
+
 import os
 import shutil
-import threading
+
 from PIL import Image
 import numpy as np
+import requests
 
 app = Flask(__name__)
 
@@ -31,11 +32,11 @@ def recieveFace(camera, face_cascade, iduser):
                 os.makedirs('dataSet/'+iduser)
 
             sampleNum += 1
-            cv2.imwrite('dataSet/'+iduser+'/'+iduser+'.' +
+            cv2.imwrite('dataSet/'+iduser+'/User.'+iduser+'.' +
                         str(sampleNum) + ' .jpg', gray[y: y + h, x: x + w])
 
         print("-----------------------Da chup "+str(sampleNum)+"--------------------")
-        if sampleNum > 50:
+        if sampleNum > 200:
             break
 
 def absolute_file_paths(directory):
@@ -72,6 +73,14 @@ def traninngFace(iduser):
     if not os.path.exists('recognizer'):
         os.makedirs('recognizer')
     recognizer.save('./static/recognizer/trainningData.yml')
+    uploadfile()
+
+def uploadfile():
+    url = "http://192.168.206.131:8080/job/copy_file_training/build?token=1234"
+
+    response = requests.request("GET", url, auth=("admin", "admin"))
+
+    print(response.text)
 
 
 @app.route('/manageruser')

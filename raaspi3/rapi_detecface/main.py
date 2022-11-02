@@ -1,20 +1,17 @@
-from flask import Flask, render_template, Response, redirect, url_for, request
+from flask import Flask, Response
 import cv2
-import io
 
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-
-import numpy as np
 from PIL import Image
 import os
 import sqlite3
 
+
 app = Flask(__name__)
 
 
+
 def get_db_connection():
-    conn = sqlite3.connect('http://127.0.0.1:8000/static/recognizer/trainningData.yml')
+    conn = sqlite3.connect('./sql/useropendoor.db')
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -48,12 +45,14 @@ def index():
         cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     return Response(gen_frames(camera, face_cascade), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+
+
+
 # get data from sqlite by ID
 def getProfile(id):
-    conn = get_db_connection()
-    query = "SELECT * FROM People WHERE ID="+str(id)
+    conn = sqlite3.connect('./sql/useropendoor.db')
+    query = "SELECT * FROM useropendoor WHERE ID="+str(id)
     cursor = conn.execute(query)
-    conn.close()
 
     profile = None
 
@@ -67,11 +66,11 @@ def getProfile(id):
 
 def nameFaceCamera(camera, face_cascade):
     recognizer = cv2.face.LBPHFaceRecognizer_create()
-    recognizer.read('http://192.168.107.22:8000/static/recognizer/trainningData.yml')
+    recognizer.read('./recognizer/trainningData.yml')
     fontface = cv2.FONT_HERSHEY_SIMPLEX
     while (True):
         # camera read
-        ret, frame = cap.read()
+        ret, frame = camera.read()
 
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -83,9 +82,11 @@ def nameFaceCamera(camera, face_cascade):
             roi_gray = gray[y:y+h, x:x+w]
 
             id, confidence = recognizer.predict(roi_gray)
+            print(id)
 
             if confidence < 90:
                 profile = getProfile(id)
+                print(profile)
                 if (profile != None):
                     # cv2.putText(frame, id, (10,30), fontface, 1, (0, 0, 255), 2)
                     cv2.putText(frame, str(
