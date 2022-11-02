@@ -35,13 +35,16 @@ def recieveFace(camera, face_cascade, iduser):
             cv2.imwrite('dataSet/'+iduser+'/User.'+iduser+'.' +
                         str(sampleNum) + ' .jpg', gray[y: y + h, x: x + w])
 
-        print("-----------------------Da chup "+str(sampleNum)+"--------------------")
+        print("-----------------------Da chup " +
+              str(sampleNum)+"--------------------")
         if sampleNum > 200:
             break
+
 
 def absolute_file_paths(directory):
     path = os.path.abspath(directory)
     return [entry.path for entry in os.scandir(path) if entry.is_file()]
+
 
 def getImageWithId(path):
     # get the path of all the files in the folder
@@ -62,6 +65,7 @@ def getImageWithId(path):
         IDs.append(ID)
     return IDs, faces
 
+
 def traninngFace(iduser):
     recognizer = cv2.face.LBPHFaceRecognizer_create()
     path = './dataSet/'+iduser+'/'
@@ -74,6 +78,7 @@ def traninngFace(iduser):
         os.makedirs('recognizer')
     recognizer.save('./static/recognizer/trainningData.yml')
     uploadfile()
+
 
 def uploadfile():
     url = "http://192.168.206.131:8080/job/copy_file_training/build?token=1234"
@@ -97,8 +102,7 @@ def index():
     return render_template('index.html')
 
 
-
-@app.route('/manageruser/adduser', methods = ['POST', 'GET'])
+@app.route('/manageruser/adduser', methods=['POST', 'GET'])
 def adduser():
     if request.method == 'POST':
         fullname = request.form['fullname']
@@ -114,7 +118,8 @@ def adduser():
             conn = get_db_connection()
             conn.execute('INSERT INTO useropendoor (fullname, age, email) VALUES (?, ?, ?)',
                          (fullname, age, email))
-            useropendoor = conn.execute('SELECT * FROM useropendoor').fetchall()
+            useropendoor = conn.execute(
+                'SELECT * FROM useropendoor').fetchall()
             conn.commit()
             conn.close()
         conn = get_db_connection()
@@ -124,23 +129,25 @@ def adduser():
     else:
         return render_template('adduser.html')
 
+
 @app.route('/manageruser/addimage')
 def addimage():
     args = request.args
     iduser = args.get("id", default="", type=str)
 
     try:
-        shutil.rmtree("./dataSet/"+ iduser)
+        shutil.rmtree("./dataSet/" + iduser)
     except OSError as e:
         print(e)
 
-    return render_template("addimage.html",iduser=iduser)
+    return render_template("addimage.html", iduser=iduser)
+
 
 @app.route('/manageruser/addimage/start')
 def addimageStart():
     args = request.args
     iduser = args.get("id", default="", type=str)
-    
+
     camera = cv2.VideoCapture()
     camera.open("http://192.168.107.140:8160/stream.mjpg")
 
@@ -166,7 +173,7 @@ def delete():
     conn.commit()
     conn.close()
     try:
-        shutil.rmtree("./dataSet/"+ iduser)
+        shutil.rmtree("./dataSet/" + iduser)
     except OSError as e:
         print(e)
     return render_template('manageruser.html', useropendoor=useropendoor)
