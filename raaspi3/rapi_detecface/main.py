@@ -90,7 +90,7 @@ def nameFaceCamera(camera, face_cascade):
                 if (profile != None):
                     # cv2.putText(frame, id, (10,30), fontface, 1, (0, 0, 255), 2)
                     cv2.putText(frame, str(
-                        profile[1])+", Year: " + str(profile[2]), (x+10, y+h+30), fontface, 1, (0, 255, 0), 2)
+                        profile[1])+", Age: " + str(profile[2]), (x+10, y+h+30), fontface, 1, (0, 255, 0), 2)
 
             else:
                 cv2.putText(frame, "No", (x+10, y+h+30),
