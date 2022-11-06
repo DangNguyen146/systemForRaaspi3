@@ -67,7 +67,7 @@ def getImageWithId(path):
 
 
 def traninngFace(iduser):
-    recognizer = cv2.face.LBPHFaceRecognizer_create()
+    recognizer = cv2.face.LBPHFaceRecognizer_create() #use Local Binary Patterns Histograms
     path = './dataSet/'+iduser+'/'
     Ids, faces = getImageWithId(path)
 

@@ -1,7 +1,3 @@
-# Web streaming example
-# Source code from the official PiCamera package
-# http://picamera.readthedocs.io/en/latest/recipes2.html#web-streaming
-
 import io
 import picamera
 import logging
@@ -83,7 +79,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
 
 class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
-    daemon_threads = True
+    daemon_threads = True  # always listen connection
 
 
 with picamera.PiCamera(resolution='320x240', framerate=24) as camera:
