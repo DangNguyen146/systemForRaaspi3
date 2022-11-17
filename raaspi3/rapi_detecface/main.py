@@ -70,17 +70,17 @@ def nameFaceCamera(camera, face_cascade):
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
             roi_gray = gray[y:y+h, x:x+w]
-
+            # print(my_input)
             id, confidence = recognizer.predict(roi_gray)
-            print(id)
+            # print(id)
 
             if confidence < 90:  # Check if confidence is less them 90 ==> "0" is perfect match
                 profile = getProfile(id)
-                print(profile)
+                # print(profile)
                 if (profile != None):
                     # cv2.putText(frame, id, (10,30), fontface, 1, (0, 0, 255), 2)
                     cv2.putText(frame, str(
-                        confidence+"%, " + profile[1])+", Age: " + str(profile[2]), (x+10, y+h+30), fontface, 1, (0, 255, 0), 2)
+                        profile[1])+", Age: " + str(profile[2]), (x+10, y+h+30), fontface, 1, (0, 255, 0), 2)
 
             else:
                 cv2.putText(frame, "No", (x+10, y+h+30),

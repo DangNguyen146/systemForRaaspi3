@@ -11,6 +11,7 @@ import requests
 
 app = Flask(__name__)
 
+
 def get_db_connection():
     conn = sqlite3.connect('./static/sql/useropendoor.db')
     conn.row_factory = sqlite3.Row
@@ -28,11 +29,8 @@ def recieveFace(camera, face_cascade, iduser):
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-            if not os.path.exists('dataSet/'+iduser):
-                os.makedirs('dataSet/'+iduser)
-
             sampleNum += 1
-            cv2.imwrite('dataSet/'+iduser+'/User.'+iduser+'.' +
+            cv2.imwrite('dataSet/User.'+iduser+'.' +
                         str(sampleNum) + ' .jpg', gray[y: y + h, x: x + w])
 
         print("-----------------------Da chup " +
@@ -67,8 +65,9 @@ def getImageWithId(path):
 
 
 def traninngFace(iduser):
-    recognizer = cv2.face.LBPHFaceRecognizer_create() #use Local Binary Patterns Histograms
-    path = './dataSet/'+iduser+'/'
+    # use Local Binary Patterns Histograms
+    recognizer = cv2.face.LBPHFaceRecognizer_create()
+    path = './dataSet/'
     Ids, faces = getImageWithId(path)
 
     # trainning
@@ -135,10 +134,10 @@ def addimage():
     args = request.args
     iduser = args.get("id", default="", type=str)
 
-    try:
-        shutil.rmtree("./dataSet/" + iduser)
-    except OSError as e:
-        print(e)
+    # try:
+    #     shutil.rmtree("./dataSet/" + iduser)
+    # except OSError as e:
+    #     print(e)
 
     return render_template("addimage.html", iduser=iduser)
 
